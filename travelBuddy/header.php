@@ -17,8 +17,10 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="style.css?v=1.6">
+
+    <link rel="stylesheet" type="text/css" href="style.css?v=1.91">
 
 </head>
 <body>
@@ -30,7 +32,13 @@
 <!--Nav-Bar-->    
             <div class="w3-cell-row" id="navBar">
                 <div class="w3-container w3-cell" style="padding-left: 15px; padding-top: 5px;">
-                    <a href="index.php" style="color: Black;">
+                    <?php
+                        if (isset($_SESSION["usertype"]))
+                            $home = "empHome.php";
+                        else
+                            $home = "index.php";
+                    ?>
+                    <a href="<?php echo $home;?>" style="color: Black;">
                        <i class="fas fa-globe-americas fa-3x">travelBuddy</i>
                     </a>
                 </div>
@@ -87,15 +95,17 @@
                 <input type="password" placeholder="Enter Password" name="pwd" required>
                 
                 <button type="submit" name="login-submit">Login</button>
-                <label>
+                <label class="psw">
                     <input type="checkbox" checked="checked" name="remember"> Remember me
                 </label>
 
             </div>
 
-            <div class="container" style="background-color:#f1f1f1">
+            <div class="container" style="background-color:#f1f1f1; height: 110px;">
                 <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
                 <span class="psw">Forgot <a href="#">password?</a></span>
+                <br>
+                <span style="float: right">Proceed to <a href="empLogin.php">Employee Login</a></span>
             </div>
         </form>
     </div>

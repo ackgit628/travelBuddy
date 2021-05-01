@@ -7,29 +7,41 @@
     require "header.php";
     require "inc/functions_inc.php";
     require "inc/dbhandler_inc.php";
+    
     $today = date("Y-m-d");
+    $date1 = $today;
+    $date2 = date("Y-m-d", strtotime("+5 days"));
 ?>
 
 <!--Search query content-->
     <div class="w3-container" id="searchq" align="center">
         <form id="searchFlights" action="inc/searchFlights_inc.php" method="post">
             
-            <input type="radio" name="trip" value="single" <?php if(!isset($_GET["trip"]) || $_GET["trip"] == "single"): ?>checked="checked"<?php endif ?> align="left"> One-Way
-            <input type="radio" name="trip" value="round" <?php if(isset($_GET["trip"]) && $_GET["trip"] == "round"): ?>checked="checked"<?php endif ?>> Round-Trip
+            <label>
+                <input type="radio" name="trip" value="single" <?php if(!isset($_GET["trip"]) || $_GET["trip"] == "single"): ?>checked="checked"<?php endif ?> align="left"> One-Way
+            </label>
+            &emsp;
+            <label>
+                <input type="radio" name="trip" value="round" <?php if(isset($_GET["trip"]) && $_GET["trip"] == "round"): ?>checked="checked"<?php endif ?>> Round-Trip
+            </label>
             
             <div class="search-city">
                 <i class="fas fa-plane-departure"></i>
                 <input type="text" name="origin" autocomplete="off" placeholder="Origin..." value="<?php if(isset($_GET["orig"])) echo $_GET["orig"]?>">
+                &emsp;
                 <i class="fas fa-plane-arrival"></i>
                 <input type="text" name="destination" autocomplete="off" placeholder="Destination..." value="<?php if(isset($_GET["dest"])) echo $_GET["dest"]?>">
+                &emsp;
             
                 <label for="departure">Departure</label>
-                <input type="date" name="departure" id="date1" value="<?php if(isset($_GET["dept"])) echo $_GET["dept"]; else echo $today;?>" min="<?php echo $today; ?>" required>
+                <input type="date" name="departure" id="date1" class="selector" value="<?php if(isset($_GET["dept"])) echo $_GET["dept"]; else echo $date1;?>" min="<?php echo $date1; ?>" required>
+                &emsp;
                 <label for="return">Return</label>
-                <input type="date" name="return" id="date2" value="<?php if(isset($_GET["retn"])) echo $_GET["retn"]?>">
+                <input type="date" name="return" id="date2" class="selector" value="<?php if(isset($_GET["retn"])) echo $_GET["retn"];?>" min="<?php echo $date1; ?>">
+                &emsp;
 
                 <label for="pax">No. of Passengers</label>
-                <select name="pax">
+                <select name="pax" class="selector">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -138,7 +150,7 @@
                             echo "<td>".$flt['deptime']."</td>";
                             echo "<td>".$flt['arrtime']."</td>";
                             echo "<td>₹".$flt['fare']."</td>";
-                            echo "<td name=\"rt\" width=\"5%\"> <input type=\"radio\" name=\"selection\"> </td>";
+                            echo "<td name=\"rt\" width=\"5%\"> <input type=\"radio\" name=\"selection1\"> </td>";
 
                             echo "</tr>";
                         }
@@ -165,7 +177,7 @@
                     exit();
                 }
 
-                mysqli_stmt_bind_param($stmt, "sss", $orig, $dest, $dow2);
+                mysqli_stmt_bind_param($stmt, "sss", $dest, $orig, $dow2);
                 mysqli_stmt_execute($stmt);
                 $resultData = mysqli_stmt_get_result($stmt);
                 $resultCheck = mysqli_num_rows($resultData);
@@ -199,7 +211,7 @@
                             echo "<td>".$flt['deptime']."</td>";
                             echo "<td>".$flt['arrtime']."</td>";
                             echo "<td>₹".$flt['fare']."</td>";
-                            echo "<td name=\"rt\" width=\"5%\"> <input type=\"radio\" name=\"selection\"> </td>";
+                            echo "<td name=\"rt\" width=\"5%\"> <input type=\"radio\" name=\"selection2\"> </td>";
 
                             echo "</tr>";
                         }

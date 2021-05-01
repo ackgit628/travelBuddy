@@ -20,8 +20,11 @@
 
     <form id="dateRange" action="pastBookings.php" method="post">
         <span>Fetch Bookings between</span>
-        <input type="date" name="date1" value="<?php echo $date1; ?>">
-        <input type="date" name="date2" value="<?php echo $date2; ?>">
+            &emsp;
+        <input type="date" name="date1" class="selector" value="<?php echo $date1; ?>">
+            &emsp;
+        <input type="date" name="date2" class="selector" value="<?php echo $date2; ?>">
+            &emsp;
         <button type="submit" name="submit-fetch">Fetch</button>
     </form>
 
@@ -29,15 +32,28 @@
 
 <?php
     //Past Bookings
+    if (isset($_SESSION["usertype"])) {                                             //select bookings for tour operators
 
-    $sql1 = "SELECT * FROM bookings WHERE uname=? AND start>? AND endd<?";                             //check for bookings
-    $stmt = mysqli_stmt_init($conn);                                            //prepared statement
-    if (!mysqli_stmt_prepare($stmt, $sql1)) {
-        header("Location:../index.php?error=sqlerror");
-        exit();
+        $sql1 = "SELECT * FROM bookings WHERE start>? AND endd<? ORDER BY start DESC";                   //check for bookings
+        $stmt = mysqli_stmt_init($conn);                                            //prepared statement
+        if (!mysqli_stmt_prepare($stmt, $sql1)) {
+            header("Location:../index.php?error=sqlerror");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "ss", $date1, $date2);
+    } else {
+
+        $sql1 = "SELECT * FROM bookings WHERE uname=? AND start>? AND endd<? ORDER BY start DESC";       //check for bookings
+        $stmt = mysqli_stmt_init($conn);                                            //prepared statement
+        if (!mysqli_stmt_prepare($stmt, $sql1)) {
+            header("Location:../index.php?error=sqlerror");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "sss", $uname, $date1, $date2);
     }
-
-    mysqli_stmt_bind_param($stmt, "sss", $uname, $date1, $date2);
+    
     mysqli_stmt_execute($stmt);
     $bookingData = mysqli_stmt_get_result($stmt);                               //save booking data
     $bookingCheck = mysqli_num_rows($bookingData);

@@ -5,6 +5,9 @@
             font-size: 11px;
             line-height: 12px;
         }
+        h3, h5 {
+            color: #4CAF50;
+        }
         a, a:focus, a:hover{
             background-color: transparent;
             color: #0055b7;
@@ -18,6 +21,10 @@
             width: 1000px;
             margin: 0 auto;
             text-align: justify;
+        }
+        .top{
+            float: right;
+            color: #4CAF50;
         }
         .lnk{
             color: #0055b7;
@@ -36,9 +43,9 @@
     
     <div class="box">
 
-        <h3 style="color: #4CAF50">Privacy Policy - TravelBuddy</h3>
+        <h3>Privacy Policy - TravelBuddy</h3>
         <hr>
-        <h5><b>Introduction:</b></h5>
+        <h5 style="color: black;"><b>Introduction:</b></h5>
 
         <p>
             TravelBuddy (India) Private Limited (hereinafter “travelBuddy”) recognizes the importance of privacy of its users and also of maintaining confidentiality of the information provided by its users as a responsible data controller and data processer.
@@ -68,13 +75,15 @@
             This Privacy Policy is an integral part of your User Agreement with travelBuddy and all capitalized terms used, but not otherwise defined herein, shall have the respective meanings as ascribed to them in the User Agreement.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">USERS OUTSIDE THE GEOGRAPHICAL LIMITS OF INDIA</h5>
+        <h5>USERS OUTSIDE THE GEOGRAPHICAL LIMITS OF INDIA</h5>
         <hr>
 
         <p>
@@ -93,13 +102,15 @@
             </ul>
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">TYPE OF INFORMATION WE COLLECT AND ITS LEGAL BASIS</h5>
+        <h5>TYPE OF INFORMATION WE COLLECT AND ITS LEGAL BASIS</h5>
         <hr>
 
         <p>
@@ -126,13 +137,15 @@
             </ul>
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">HOW WE USE YOUR PERSONAL INFORMATION:</h5>
+        <h5>HOW WE USE YOUR PERSONAL INFORMATION:</h5>
         <hr>
 
         <p>
@@ -191,13 +204,15 @@
             travelBuddy may from time to time launch reward programs by way of which users may stand to win travel related rewards or other rewards. We may use your Personal Information to enroll you in the rewards program and status of the same will be visible each time you log in to the Website. Depending on the reward program, each time you win a reward, travelBuddy may share your Personal Information with a third party that will be responsible for fulfilling the reward to you. You may however choose to opt out of such reward programs by writing to us. For various purposes such as fraud detection, offering bookings on credit etc., we at times may verify information of customers on selective basis, including their credit information. Additionally, travelBuddy may share your Personal Information, anonymized and/ or aggregated data to a third party that travelBuddy may engage to perform certain tasks on its behalf, including but not limited to payment processing, data hosting, data processing and assessing credit worthiness for offering bookings on credit.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">HOW LONG DO WE KEEP YOUR PERSONAL INFORMATION?</h5>
+        <h5>HOW LONG DO WE KEEP YOUR PERSONAL INFORMATION?</h5>
         <hr>
 
         <p>
@@ -208,13 +223,15 @@
             Where your personal data is no longer required we will ensure it is either securely deleted or stored in a way which means it will no longer be used by the business.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">COOKIES AND SESSION DATA</h5>
+        <h5>COOKIES AND SESSION DATA</h5>
         <hr>
 
         <p>
@@ -245,13 +262,15 @@
             Each time you access the Website your session data gets logged. Session data may consist of various aspects like the IP address, operating system and type of browser software being used and the activities conducted by the User while on the Website. We collect session data because it helps us analyze User’s choices, browsing pattern including the frequency of visits and duration for which a User is logged on. It also helps us diagnose problems with our servers and lets us better administer our systems. The aforesaid information cannot identify any User personally. However, it may be possible to determine a User's Internet Service Provider (ISP), and the approximate geographic location of User's point of connectivity through the above session data.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">WITH WHOM YOUR PERSONAL INFORMATION IS SHARED</h5>
+        <h5>WITH WHOM YOUR PERSONAL INFORMATION IS SHARED</h5>
         <hr>
 
         <p>
@@ -317,13 +336,15 @@
             Such disclosure and storage may take place without your knowledge. In that case, we shall not be liable to you or any third party for any damages howsoever arising from such disclosure and storage.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">USER GENERATED CONTENT</h5>
+        <h5>USER GENERATED CONTENT</h5>
         <hr>
 
         <p>
@@ -343,26 +364,30 @@
             Each User who posts review or ratings, Q&A, photographs shall have a profile, which other Users will be able to access. Other Users may be able to view the number of trips, reviews written, questions asked and answered and photographs posted.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">HOW CAN YOU OPT-OUT OF RECEIVING OUR PROMOTIONAL E-MAILS?</h5>
+        <h5>HOW CAN YOU OPT-OUT OF RECEIVING OUR PROMOTIONAL E-MAILS?</h5>
         <hr>
 
         <p>
             You will occasionally receive e-mail updates from us about fare sales in your area, special offers, new travelBuddy services, and other noteworthy items. We hope you will find these updates interesting and informative. If you wish not to receive them, please click on the "unsubscribe" link or follow the instructions in each e-mail message.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box" >
 
-        <h5 style="color: #4CAF50">PERMISSIONS REQUIRED FOR USING OUR MOBILE APPLICATIONS</h5>
+        <h5>PERMISSIONS REQUIRED FOR USING OUR MOBILE APPLICATIONS</h5>
         <hr>
 
         <p>
@@ -429,65 +454,75 @@
             <b>Location:</b> This permission enables us to give you the benefit of location specific deals and provide you a personalized in-funnel experience. When you launch our app to make a travel booking, we auto-detect your location so that your nearest Airport or City is auto-filled. We require this permission to recommend your nearest hotels in case you are running late and want to make a quick last minute booking for the nearest hotel. Your options are personalized basis your locations. For international travel, this enables us to determine your time zone and provide information accordingly.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">HOW WE PROTECT YOUR PERSONAL INFORMATION?</h5>
+        <h5>HOW WE PROTECT YOUR PERSONAL INFORMATION?</h5>
         <hr>
 
         <p>
             All payments on the Website are secured. This means all Personal Information you provide is transmitted using TLS (Transport Layer Security) encryption. TSL is a proven coding system that lets your browser automatically encrypt, or scramble, data before you send it to us. Website has stringent security measures in place to protect the loss, misuse, and alteration of the information under our control. Whenever you change or access your account information, we offer the use of a secure server. Once your information is in our possession we adhere to strict security guidelines, protecting it against unauthorized access.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">WITHDRAWAL OF CONSENT AND PERMISSION</h5>
+        <h5>WITHDRAWAL OF CONSENT AND PERMISSION</h5>
         <hr>
 
         <p>
             You may withdraw your consent to submit any or all Personal Information or decline to provide any permissions on its Website as covered above at any time. In case, you choose to do so then your access to the Website may be limited, or we might not be able to provide the services to you. You may withdraw your consent by sending an email to <span class="lnk"> <a href="mailto:privacy@go-travelBuddy.com">privacy@go-travelBuddy.com</a> </span>
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">YOUR RIGHTS QUA PERSONAL INFORMATION</h5>
+        <h5>YOUR RIGHTS QUA PERSONAL INFORMATION</h5>
         <hr>
 
         <p>
             You may access your Personal Information from your user account with travelBuddy. You may also correct your personal information or delete such information (except some mandatory fields) from your user account directly. If you don’t have such a user account, then you write to <span class="lnk"> <a href="mailto:privacy@go-travelBuddy.com">privacy@go-travelBuddy.com</a> </span>
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">ELIGIBILITY TO TRANSACT WITH travelBuddy</h5>
+        <h5>ELIGIBILITY TO TRANSACT WITH travelBuddy</h5>
         <hr>
 
         <p>
             You must be atleast 18 years of age to transact directly with travelBuddy and also to consent to the processing of your personal data.
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>
 
     <div class="box">
 
-        <h5 style="color: #4CAF50">CHANGES TO THE PRIVACY POLICY</h5>
+        <h5>CHANGES TO THE PRIVACY POLICY</h5>
         <hr>
 
         <p>
@@ -500,6 +535,8 @@
             </b>
         </p>
 
+        <span class="top"> <a href="#top"> <i class="far fa-arrow-alt-circle-up"></i> TOP</a> </span>
+        <br>
     </div>
 
     <br>

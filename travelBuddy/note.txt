@@ -1,0 +1,7 @@
+files currently not in use:
+"reviewBooking.php"
+"reviewBooking_inc.php"
+"confirmTourBooking.php"
+"backend-search"
+
+- as on 27 Apr 2021.

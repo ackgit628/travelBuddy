@@ -18,19 +18,19 @@
                 <input type="text" name="origcity" autocomplete="off" placeholder="From.." value="<?php if(isset($_GET["origcity"])) echo $_GET["origcity"]?>">
             
                 <label for="startdate">Leaving on</label>
-                <input type="date" name="startdate" value="<?php if(isset($_GET["startdate"])) echo $_GET["startdate"]?>" required>
+                <input type="date" name="startdate" class="selector" value="<?php if(isset($_GET["startdate"])) echo $_GET["startdate"]?>" required>
                 <label for="enddate">Returning</label>
-                <input type="date" name="enddate" value="<?php if(isset($_GET["enddate"])) echo $_GET["enddate"]?>" required>
+                <input type="date" name="enddate" class="selector" value="<?php if(isset($_GET["enddate"])) echo $_GET["enddate"]?>" required>
 
                 <label for="room">Room Type</label>
-                <select name="room">
+                <select name="room" class="selector">
                     <option value="Single">Single Bed</option>
                     <option value="Double">Double Bed</option>
                     <option value="Suite">Suite</option>
                 </select>
 
                 <label for="pax">No. of Guests</label>
-                <select name="pax">
+                <select name="pax" class="selector">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -43,7 +43,7 @@
                 </select>
             </div>
             
-            <button type="submit" name="search-submit" value="Search">Search
+            <button type="submit" name="searchTour-submit" value="Search">Search
                 <i class="fas fa-search"></i>
             </button>
         </form>
@@ -112,7 +112,7 @@
                         }
 
                         echo "<td name=\"lt\" width=\"15%\">".$hotel['name']."</td>";
-                        echo "<td><p align=left>".$hotel['description']."</p><p align=left>".$hotel['amenities']."</p></td>";
+                        echo "<td><p align=left>".$hotel['description']."</p><p align=left>Amenities: ".$hotel['amenities']."</p></td>";
                         echo "<td width=\"10%\"><p>";
                             $i = 1;                                                             // display rating here
                             while ($i <= $hotel['rating']) {

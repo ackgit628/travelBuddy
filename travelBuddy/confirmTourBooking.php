@@ -12,9 +12,9 @@
 
 <div class="w3-cell-row">
 
-    <form id="validate-guest" action="inc/validateBooking_inc.php" method="post">
+    <form id="review-guest" action="inc/reviewBooking_inc.php" method="post">
 
-    <div class="w3-container w3-cell" style="border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 300px;">
+    <div class="w3-container w3-cell" style="width: 75%; border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 100px;">
 
         <h1>Enter guest information</h1>
 
@@ -28,13 +28,13 @@
         <input type="text" name="fname[]" autocomplete="off" placeholder="Firstname">
         <input type="text" name="lname[]" autocomplete="off" placeholder="Lastname">
         <label style="padding-left: 10px;">Gender</label>
-        <select name="gender[]">
+        <select name="gender[]" class="selector">
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
         </select>
         <label style="padding-left: 10px;">DOB</label>
-        <input type="date" name="dob[]">
+        <input type="date" name="dob[]" class="selector">
         <br>
         <input type="text" name="phone[]" autocomplete="off" placeholder="Mobile no.">
         <input type="text" name="addr[]" autocomplete="off" placeholder="Address">
@@ -61,8 +61,8 @@
             $room = $_GET["room"];
             $pax = $_GET["pax"];
 
-            $fltcd1 = substr($flt1, -5);                                //extracting flight code from table data
-            $fltcd2 = substr($flt2, -5);
+            // $fltcd1 = substr($flt1, -5);                                //extracting flight code from table data
+            // $fltcd2 = substr($flt2, -5);
 
             //FLT1
             $sql = "SELECT * FROM flights WHERE fltcode=?";
@@ -72,7 +72,7 @@
                 exit();
             }
 
-            mysqli_stmt_bind_param($stmt, "s", $fltcd1);
+            mysqli_stmt_bind_param($stmt, "s", $flt1);
             mysqli_stmt_execute($stmt);
             $resultData = mysqli_stmt_get_result($stmt);
             $flt1Detail = mysqli_fetch_assoc($resultData);
@@ -90,7 +90,7 @@
                 exit();
             }
 
-            mysqli_stmt_bind_param($stmt, "s", $fltcd2);
+            mysqli_stmt_bind_param($stmt, "s", $flt2);
             mysqli_stmt_execute($stmt);
             $resultData = mysqli_stmt_get_result($stmt);
             $flt2Detail = mysqli_fetch_assoc($resultData);
@@ -113,11 +113,22 @@
             $resultData = mysqli_stmt_get_result($stmt);
             $hotelDetail = mysqli_fetch_assoc($resultData);
 
+            // Get rate by room
+            if ($room == "Single") {
+                $rate = $hotelDetail['rate1'];
+            }
+            if ($room == "Double") {
+                $rate = $hotelDetail['rate2'];
+            }
+            if ($room == "Suite") {
+                $rate = $hotelDetail['rate3'];
+            }
+
             $chki = date("F j, Y", strtotime($sdate));
             $chko = date("F j, Y", strtotime($edate));
             $ndays = dateDifference($sdate, $edate);
             $nrooms = ($pax%2 == 0) ? $pax/2 : ($pax+1)/2;
-            $sub3 = $hotelDetail['rate1']*$ndays*$nrooms; 
+            $sub3 = $rate*$ndays*$nrooms; 
         ?>
 
         <!-- Flight1 card -->
@@ -158,7 +169,7 @@
             <p><?php echo "No. of Guests: ".$pax; ?></p>
             <p><?php echo "No. of Rooms: ".$nrooms; ?></p>
             <p><?php echo $ndays." nights"; ?></p>
-            <p style="color: grey"><?php echo "Rate: ₹".$hotelDetail['rate1']."per night"; ?></p>
+            <p style="color: grey"><?php echo "Rate: ₹".$rate."per night"; ?></p>
             <p class="price"><?php echo "Subtotal: ₹".$sub3; ?></p>
             <!-- <p><button>Add to Cart</button></p> -->
         </div>
@@ -173,8 +184,8 @@
 
         <div class="card">
             <p class="price"><?php echo "Total Amount: ₹".$totv; ?></p>
-            <input type="text" name="flt1" value="<?php echo $fltcd1; ?>" style="display: none">
-            <input type="text" name="flt2" value="<?php echo $fltcd2; ?>" style="display: none">
+            <input type="text" name="flt1" value="<?php echo $flt1; ?>" style="display: none">
+            <input type="text" name="flt2" value="<?php echo $flt2; ?>" style="display: none">
             <input type="text" name="hotel" value="<?php echo $hotel; ?>" style="display: none">
             <input type="text" name="sdate" value="<?php echo $sdate; ?>" style="display: none">
             <input type="text" name="edate" value="<?php echo $edate; ?>" style="display: none">
@@ -182,9 +193,10 @@
             <input type="text" name="pax" value="<?php echo $pax; ?>" style="display: none">
             <input type="text" name="totv" value="<?php echo $totv; ?>" style="display: none">
             <input type="text" name="url" value="<?php echo $_SESSION["url"]; ?>" style="display: none;">
-            <p><input type="submit" name="validateTour-submit" value="Confirm Booking"></p></form>
+            <p><input type="submit" name="reviewTour-submit" value="Confirm Booking"></p></form>
         </div>
 
         <br>
+    </div>
 
 </div>

@@ -1,6 +1,9 @@
 <?php
     require "header.php";
     $today = date("Y-m-d");
+
+    $date1 = $today;
+    $date2 = date("Y-m-d", strtotime("+5 days"));
 ?>
 
 <head>
@@ -15,7 +18,7 @@
         if (!isset($_SESSION["username"])):
     ?>
 
-        <div class="w3-container w3-cell" style="border-right: 2px solid lightgrey;">
+        <div class="w3-container w3-cell" style="width: 35%; border-right: 2px solid lightgrey;">
             <p align=center>
                 <b>Existing User? </b>
                 <button onclick="document.getElementById('id01').style.display='block'">Login</button>
@@ -70,32 +73,28 @@
 
             ?>
         </div>
-    <?php endif; ?>
 
 <!--Search query content-->
         <div class="w3-container w3-cell" id="searchq" align="center">
             <form id="searchFlights" action="inc/searchFlights_inc.php" method="post">
                 <p></p>
-                <input type="radio" checked="checked" name="trip" value="single" align="left">
-                <label for="one-way">One-Way</label>
-                <input type="radio" name="trip" value="round" >
-                <label for="round">Round-Trip</label>
+                <label>
+                    <input type="radio" checked="checked" name="trip" value="single" align="left"> One-Way
+                </label>
+                <label>
+                    <input type="radio" name="trip" value="round" > Round-Trip
+                </label>
                 
                 <div class="search-city">
                     <i class="fas fa-plane-departure"></i>
                     <input type="text" name="origin" autocomplete="off" placeholder="Origin..." >
+                    &emsp;
                     <i class="fas fa-plane-arrival"></i>
                     <input type="text" name="destination" autocomplete="off" placeholder="Destination..." >
-                
-                    <label for="departure">Departure</label>
-                    <input type="date" name="departure" required>
-                    <label for="departure">Return</label>
-                    <input type="date" name="return">
-
-                    <p></p>
+                    &emsp;
 
                     <label for="pax">No. of Passengers</label>
-                    <select name="pax">
+                    <select name="pax" class="selector">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -106,6 +105,17 @@
                         <option value="8">8</option>
                         <option value="9">9</option>
                     </select>
+                    &emsp;
+
+                    <br>
+                
+                    <label for="departure">Departure</label>
+                    <input type="date" name="departure" class="selector" value="<?php echo $date1; ?>" min="<?php echo $date1; ?>" required>
+                    &emsp;
+                    <label for="departure">Return</label>
+                    <input type="date" name="return" class="selector" value="<?php echo $date2; ?>" min="<?php echo $date1; ?>">
+
+                    <!-- <p></p> -->
 
                     <p></p>
 
@@ -116,10 +126,64 @@
                 </button>
             </form>
         </div>
+
+    <?php endif;
+        if (isset($_SESSION["username"])):
+    ?>
+
+    <!--Search query content-->
+        <div class="w3-container w3-cell" id="searchq" align="center">
+            <form id="searchFlights" action="inc/searchFlights_inc.php" method="post">
+                <p></p>
+                <label>
+                    <input type="radio" checked="checked" name="trip" value="single" align="left"> One-Way
+                </label>
+                <label>
+                    <input type="radio" name="trip" value="round" > Round-Trip
+                </label>
+                
+                <div class="search-city">
+                    <i class="fas fa-plane-departure"></i>
+                    <input type="text" name="origin" autocomplete="off" placeholder="Origin..." >
+                    &emsp;
+                    <i class="fas fa-plane-arrival"></i>
+                    <input type="text" name="destination" autocomplete="off" placeholder="Destination..." >
+                    &emsp;
+
+                    <label for="pax">No. of Passengers</label>
+                    <select name="pax" class="selector">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                    </select>
+                    &emsp;
+                
+                    <label for="departure">Departure</label>
+                    <input type="date" name="departure" class="selector" value="<?php echo $date1; ?>" min="<?php echo $date1; ?>" required>
+                    &emsp;
+                    <label for="departure">Return</label>
+                    <input type="date" name="return" class="selector" value="<?php echo $date2; ?>" min="<?php echo $date1; ?>">
+
+                    <p></p>
+
+                </div>
+                
+                <button type="submit" name="search-submit" value="Search">Search
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
     </div>
 
 
-<!--Login form content-->
+ <!--Login form content
     <div id="id01" class="modal">
         <form class="modal-content animate" action="inc/login_inc.php" method="post">
             
@@ -148,7 +212,7 @@
                 <span class="psw">Forgot <a href="#">password?</a></span>
             </div>
         </form>
-    </div>
+    </div> -->
 
     <?php
         if (isset($_GET["error"])) {
@@ -169,11 +233,23 @@
             if ($_GET["booking"] == "success") {
                 echo "<h3 align=\"center\"><b>Booking Completed Succesfully!</b></h3>";
             }
+
+            if ($_GET["booking"] == "fail1") {
+                echo "<h3 align=\"center\"><b>Booking Failed.<br>The flight you were searching for is no longer available.<br>Please Try Again</b></h3>";
+            }
+
+            if ($_GET["booking"] == "fail2") {
+                echo "<h3 align=\"center\"><b>Booking Failed.<br>The hotel you were searching for is no longer available.<br>Please Try Again</b></h3>";
+            }
+
+            if ($_GET["booking"] == "fail3") {
+                echo "<h3 align=\"center\"><b>Booking Failed.<br>The tour package you were searching for is no longer available.<br>Please Try Again</b></h3>";
+            }
         }
     ?>
 
 <!--Login button action-->
-    <script>
+<!--     <script>
     // Get the modal
     var modal = document.getElementById('id01');
 
@@ -183,7 +259,7 @@
             modal.style.display = "none";
         }
     }
-    </script>
+    </script> -->
 
 </main>
 

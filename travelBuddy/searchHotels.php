@@ -6,30 +6,40 @@
 <?php
     require "header.php";
     require "inc/dbhandler_inc.php";
+    
+    $today = date("Y-m-d");
+    $date1 = $today;
+    $date2 = date("Y-m-d", strtotime("+5 days"));
 ?>
 
 <!--Search query content-->
     <div class="w3-container" id="searchq" align="center">
+        <br>
         <form id="searchHotels" action="inc/searchHotels_inc.php" method="post">
             
             <div class="search-city">
+                <i class="fas fa-hotel"></i>
                 <input type="text" name="city" autocomplete="off" placeholder="Where do you want to go..." value="<?php if(isset($_GET["city"])) echo $_GET["city"]?>">
+                &emsp;
             
                 <label for="checkin">Check-in</label>
-                <input type="date" name="checkin" value="<?php if(isset($_GET["checkin"])) echo $_GET["checkin"]?>" required>
+                <input type="date" name="checkin" class="selector" value="<?php if(isset($_GET["checkin"])) echo $_GET["checkin"]; else echo $date1;?>" min="<?php echo $date1; ?>" required>
+                &emsp;
                 <label for="checkout">Check-out</label>
-                <input type="date" name="checkout" value="<?php if(isset($_GET["checkout"])) echo $_GET["checkout"]?>" required>
+                <input type="date" name="checkout" class="selector" value="<?php if(isset($_GET["checkout"])) echo $_GET["checkout"]; else echo $date2;?>" min="<?php echo $date1; ?>" required>
+                &emsp;
 
                 <label for="room">Room Type</label>
-                <select name="room">
+                <select name="room" class="selector">
                     <!-- <option value="none" selected disabled hidden>Select</option> -->
                     <option value="Single">Single Bed</option>
                     <option value="Double">Double Bed</option>
                     <option value="Suite">Suite</option>
                 </select>
+                &emsp;
 
                 <label for="pax">No. of Guests</label>
-                <select name="pax" value="<?php if(isset($_GET["pax"])) echo $_GET["pax"]?>">
+                <select name="pax" class="selector" value="<?php if(isset($_GET["pax"])) echo $_GET["pax"]?>">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -133,7 +143,7 @@
 
                         // echo "<input id=\"checker\" type=\"checkbox\">";
                         echo "<td name=\"lt\" width=\"15%\">".$hotel['name']."</td>";
-                        echo "<td><p align=left>".$hotel['description']."</p><p align=left>".$hotel['amenities']."</p></td>";
+                        echo "<td><p align=left>".$hotel['description']."</p><p align=left>Amenities: ".$hotel['amenities']."</p></td>";
                         echo "<td width=\"10%\"><p>";
                             $i = 1;                                                             // display rating here
                             while ($i <= $hotel['rating']) {

@@ -19,6 +19,7 @@ if (isset($_POST['validateFlight-submit'])) {
     $flt2 = $_POST['flt2'];
     $dept = $_POST['dept'];
     $retn = $_POST['retn'];
+    $pax = $_POST['pax'];
     $totv = $_POST['totv'];
     $url = $_POST['url'];
     $uname = $_SESSION['username'];
@@ -41,7 +42,7 @@ if (isset($_POST['validateFlight-submit'])) {
 
     // header("Location: $url&hello");
 
-    createFlightBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $dept, $retn, $uname, $bookid, $totv);
+    createFlightBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $dept, $retn, $pax, $uname, $bookid, $totv);
     mysqli_close($conn);                                                    //close connection
 }
 
@@ -81,7 +82,7 @@ elseif (isset($_POST['validateHotel-submit'])) {
 
     // header("Location: $url&hello=".$checkin);
 
-    createHotelBooking($conn, $fname, $lname, $gender, $dob, $hname, $checkin, $checkout, $room, $uname, $bookid, $totv);
+    createHotelBooking($conn, $fname, $lname, $gender, $dob, $hname, $checkin, $checkout, $room, $pax, $uname, $bookid, $totv);
     mysqli_close($conn);                                                    //close connection
 }
 

@@ -6,6 +6,13 @@
 
 <head>
     <title>Confirm your Booking!</title>
+    <style type="text/css">
+        .card {
+            text-align: left;
+            width: auto;
+            padding: 15px;
+        }
+    </style>
 </head>
 
 <!-- Footer containing Flight Information -->
@@ -75,7 +82,9 @@
         echo "</div>";
         echo "</div>";
 
-        $sub1 = ( $flt1['fare'] + $flt2['fare'] ) * $pax;
+        $sub1 = $flt1['fare'] * $pax;
+        $sub2 = $flt2['fare'] * $pax;
+        $sub3 = $sub1 + $sub2;
 
     ?>
 
@@ -88,7 +97,7 @@
     <form id="validate-guest" action="inc/validateBooking_inc.php" method="post">
 
 <!-- Container for Guest Information -->
-    <div class="w3-container w3-cell" style="border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 300px;">
+    <div class="w3-container w3-cell" style="width: 78%; border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 100px;">
 
         <h1>Enter guest information</h1>
 
@@ -101,14 +110,14 @@
         
         <input type="text" name="fname[]" autocomplete="off" placeholder="Firstname">
         <input type="text" name="lname[]" autocomplete="off" placeholder="Lastname">
-        <label style="padding-left: 10px;">Gender</label>
-        <select name="gender[]">
+        <label style="padding-left: 10px;" for="gender">Gender</label>
+        <select name="gender[]" class="selector">
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
         </select>
-        <label style="padding-left: 10px;">DOB</label>
-        <input type="date" name="dob[]">
+        <label style="padding-left: 10px;" for="dob">DOB</label>
+        <input type="date" name="dob[]" class="selector">
         <br>
         <input type="text" name="phone[]" autocomplete="off" placeholder="Mobile no.">
         <input type="text" name="addr[]" autocomplete="off" placeholder="Address">
@@ -162,10 +171,30 @@
             $chko = date("F j, Y", strtotime($checkout));
             $nights = dateDifference($checkin, $checkout);
             $nrooms = ($pax%2 == 0) ? $pax/2 : ($pax+1)/2;
-            $sub2 = $rate*$nights*$nrooms; 
+            $sub4 = $rate*$nights*$nrooms; 
         ?>
 
         <div class="card">
+            <!-- <h4><b>Fare Summary</b></h4>
+            Base Fare: <span style="float: right; font-weight: bold;">₹<?php echo $sub1; ?></span>
+            <hr>
+            Convenience Fee: <span style="float: right; font-weight: bold;">₹100</span>
+            <hr style="display: block; border: 1px solid #ddd;">
+            <p><b>Grand Total:</b> <span style="float: right; font-weight: bold;">₹<?php echo $sub1+100; ?></span> </p> -->
+
+            <h4><b><?php echo $flt1['airline']." ".$flt1['fltcode']; ?></b></h4>
+            <p><?php echo $doj1; ?>
+            <span style="float: right; font-weight: bold;">₹<?php echo $sub1; ?></span></p>
+            <h4><b><?php echo $flt2['airline']." ".$flt2['fltcode']; ?></b></h4>
+            <p><?php echo $doj2; ?>
+            <span style="float: right; font-weight: bold;">₹<?php echo $sub2; ?></span></p>
+            <p class="price">Subtotal:<span style="float: right; font-weight: bold;">₹<?php echo $sub3; ?></span></p>
+            <!-- <p><button>Add to Cart</button></p> -->
+        </div>
+
+        <br>
+
+        <div class="card" style="text-align: center;">
             <h2><?php echo $hotelDetail['name'].", ".$hotelDetail['cityname']; ?></h2>
             <p><?php echo $chki." to ".$chko; ?></p>
             <p><?php echo "Room selected: ".$room; ?></p>
@@ -173,7 +202,7 @@
             <p><?php echo "No. of Rooms: ".$nrooms; ?></p>
             <p><?php echo $nights." nights"; ?></p>
             <p style="color: grey"><?php echo "Rate: ₹".$rate."per night"; ?></p>
-            <p class="price"><?php echo "Subtotal: ₹".$sub2; ?></p>
+            <p class="price" style="text-align: left;">Subtotal:<span style="float: right; font-weight: bold;">₹<?php echo $sub4; ?></span></p>
             <!-- <p><button>Add to Cart</button></p> -->
         </div>
 
@@ -183,11 +212,11 @@
         <br>
 
         <?php
-            $totv = $sub1 + $sub2;
+            $totv = $sub3 + $sub4;
         ?>
 
         <div class="card">
-            <p class="price"><?php echo "Total Amount: ₹".$totv; ?></p>
+            <p class="price" style="text-align: left;">Total Amount:<span style="float: right; font-weight: bold;">₹<?php echo $totv; ?></span></p>
             <input type="text" name="flt1" value="<?php echo $flt1cd; ?>" style="display: none">
             <input type="text" name="flt2" value="<?php echo $flt2cd; ?>" style="display: none">
             <input type="text" name="hotel" value="<?php echo $hotel; ?>" style="display: none">

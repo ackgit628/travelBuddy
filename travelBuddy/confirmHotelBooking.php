@@ -14,7 +14,7 @@
 
     <form id="validate-guest" action="inc/validateBooking_inc.php" method="post">
 
-    <div class="w3-container w3-cell" style="border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 300px;">
+    <div class="w3-container w3-cell" style="width: 77%; border-right: 2px solid lightgrey; padding-left: 20px; padding-right: 50px;">
 
         <h1>Enter guest information</h1>
 
@@ -28,13 +28,13 @@
         <input type="text" name="fname[]" autocomplete="off" placeholder="Firstname">
         <input type="text" name="lname[]" autocomplete="off" placeholder="Lastname">
         <label style="padding-left: 10px;">Gender</label>
-        <select name="gender[]">
+        <select name="gender[]" class="selector">
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
         </select>
         <label style="padding-left: 10px;">DOB</label>
-        <input type="date" name="dob[]">
+        <input type="date" name="dob[]" class="selector">
         <br>
         <input type="text" name="phone[]" autocomplete="off" placeholder="Mobile no.">
         <input type="text" name="addr[]" autocomplete="off" placeholder="Address">
@@ -97,7 +97,7 @@
             <p><?php echo "No. of Rooms: ".$nrooms; ?></p>
             <p><?php echo $nights." nights"; ?></p>
             <p style="color: grey"><?php echo "Rate: ₹".$rate."per night"; ?></p>
-            <p class="price"><?php echo "Subtotal: ₹".$sub1; ?></p>
+            <p class="price" style="text-align: left; padding: 10px 15px;">Subtotal:<span style="float: right; font-weight: bold;">₹<?php echo $sub1; ?></span></p>
             <!-- <p><button>Add to Cart</button></p> -->
         </div>
 
@@ -110,7 +110,7 @@
         ?>
 
         <div class="card">
-            <p class="price"><?php echo "Total Amount: ₹".$totv; ?></p>
+            <p class="price" style="text-align: left; padding: 10px 15px;">Total Amount:<span style="float: right; font-weight: bold;">₹<?php echo $totv; ?></span></p>
             <input type="text" name="hotel" value="<?php echo $hotel; ?>" style="display: none">
             <input type="text" name="checkin" value="<?php echo $checkin; ?>" style="display: none">
             <input type="text" name="checkout" value="<?php echo $checkout; ?>" style="display: none">

@@ -5,6 +5,9 @@
             font-size: 11px;
             line-height: 12px;
         }
+        h3, h5 {
+            color: #0055b7;
+        }
         a, a:focus, a:hover{
             text-decoration: none;
             color: #0055b7;
@@ -39,7 +42,7 @@
     
     <div class="box" id="top">
 
-        <h3 style="color: #0055b7">Agreement Between User and travelBuddy</h3>
+        <h3>Agreement Between User and travelBuddy</h3>
         <hr>
 
         <p>
@@ -75,7 +78,7 @@
 
     <div class="box" id="1">
 
-        <h5 style="color: #0055b7">APPLICABILITY</h5>
+        <h5>APPLICABILITY</h5>
         <hr>
         
         <p>
@@ -104,7 +107,7 @@
 
     <div class="box" id="2">
 
-        <h5 style="color: #0055b7">ELIGIBILITY TO USE</h5>
+        <h5>ELIGIBILITY TO USE</h5>
         <hr>
  
         <p>
@@ -134,7 +137,7 @@
 
     <div class="box" id="3">
 
-        <h5 style="color: #0055b7">CONTENT</h5>
+        <h5>CONTENT</h5>
         <hr>
 
         <p>
@@ -171,7 +174,7 @@
 
     <div class="box" id="4">
 
-        <h5 style="color: #0055b7">WEBSITE</h5>
+        <h5>WEBSITE</h5>
         <hr>
 
         <p>
@@ -210,7 +213,7 @@
 
     <div class="box" id="5">
 
-        <h5 style="color: #0055b7">BOOKINGS BY TRAVEL AGENTS</h5>
+        <h5>BOOKINGS BY TRAVEL AGENTS</h5>
         <hr>
 
         <p>
@@ -229,7 +232,7 @@
 
     <div class="box" id="6">
 
-        <h5 style="color: #0055b7">LIMITED LIABILITY OF travelBuddy</h5>
+        <h5>LIMITED LIABILITY OF travelBuddy</h5>
         <hr>
 
         <p>
@@ -261,7 +264,7 @@
 
     <div class="box" id="7">
 
-        <h5 style="color: #0055b7">USER'S RESPONSIBILITY</h5>
+        <h5>USER'S RESPONSIBILITY</h5>
         <hr>
 
         <p>
@@ -292,7 +295,7 @@
 
     <div class="box" id="8">
 
-        <h5 style="color: #0055b7">SECURITY AND ACCOUNT RELATED INFORMATION</h5>
+        <h5>SECURITY AND ACCOUNT RELATED INFORMATION</h5>
         <hr>
 
         <p>
@@ -323,7 +326,7 @@
 
     <div class="box" id="9">
 
-        <h5 style="color: #0055b7">FEES AND PAYMENT</h5>
+        <h5>FEES AND PAYMENT</h5>
         <hr>
 
         <p>
@@ -370,7 +373,7 @@
 
     <div class="box" id="10">
 
-        <h5 style="color: #0055b7">USAGE OF THE MOBILE NUMBER, COMMUNICATION DETAILS OF THE USER BY travelBuddy</h5>
+        <h5>USAGE OF THE MOBILE NUMBER, COMMUNICATION DETAILS OF THE USER BY travelBuddy</h5>
         <hr>
 
         <p>
@@ -402,7 +405,7 @@
 
     <div class="box" id="11">
 
-        <h5 style="color: #0055b7">INSURANCE</h5>
+        <h5>INSURANCE</h5>
         <hr>
 
         <p>
@@ -421,7 +424,7 @@
 
     <div class="box" id="12">
 
-        <h5 style="color: #0055b7">COMPLIANCE OF LIBERALIZED REMITTANCE SCHEME (LRS)</h5>
+        <h5>COMPLIANCE OF LIBERALIZED REMITTANCE SCHEME (LRS)</h5>
         <hr>
 
         <p>
@@ -444,7 +447,7 @@
 
     <div class="box" id="13">
 
-        <h5 style="color: #0055b7">OBLIGATION TO OBTAIN VISA</h5>
+        <h5>OBLIGATION TO OBTAIN VISA</h5>
         <hr>
 
         <p>
@@ -463,7 +466,7 @@
 
     <div class="box" id="14">
 
-        <h5 style="color: #0055b7">FORCE MAJEURE</h5>
+        <h5>FORCE MAJEURE</h5>
         <hr>
 
         <p>
@@ -486,7 +489,7 @@
 
     <div class="box" id="15">
 
-        <h5 style="color: #0055b7">ADVERTISERS ON travelBuddy, AND LINKED WEBSITES</h5>
+        <h5>ADVERTISERS ON travelBuddy, AND LINKED WEBSITES</h5>
         <hr>
 
         <p>
@@ -513,7 +516,7 @@
 
     <div class="box" id="16">
 
-        <h5 style="color: #0055b7">RIGHT TO REFUSE</h5>
+        <h5>RIGHT TO REFUSE</h5>
         <hr>
 
         <p>
@@ -576,7 +579,7 @@
 
     <div class="box" id="17">
 
-        <h5 style="color: #0055b7">RIGHT TO CANCEL</h5>
+        <h5>RIGHT TO CANCEL</h5>
         <hr>
 
         <p>
@@ -603,7 +606,7 @@
 
     <div class="box" id="18">
 
-        <h5 style="color: #0055b7">FAKE CALLS AND OTHER SIMILAR PHISHING, SPAMMING OR FRAUDULENT ACTIVITIES</h5>
+        <h5>FAKE CALLS AND OTHER SIMILAR PHISHING, SPAMMING OR FRAUDULENT ACTIVITIES</h5>
         <hr> 
 
         <p>
@@ -626,7 +629,7 @@
     
     <div class="box" id="19">
 
-        <h5 style="color: #0055b7">INDEMNIFICATION</h5>
+        <h5>INDEMNIFICATION</h5>
         <hr> 
  
         <p>
@@ -645,7 +648,7 @@
 
     <div class="box" id="20">
 
-        <h5 style="color: #0055b7">COVID-19 RELATED TERMS & CONDITIONS</h5>
+        <h5>COVID-19 RELATED TERMS & CONDITIONS</h5>
         <hr> 
  
         <p>
@@ -682,7 +685,7 @@
  
     <div class="box" id="21">
 
-        <h5 style="color: #0055b7">MISCELLANEOUS</h5>
+        <h5>MISCELLANEOUS</h5>
         <hr>
 
         <P>

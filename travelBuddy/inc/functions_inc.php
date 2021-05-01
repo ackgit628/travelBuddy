@@ -85,7 +85,7 @@ function createUser($conn, $fname, $lname, $uname, $email, $pass1, $phone) {
     exit();
 }
 
-// ***************functions for login***************
+// ***************functions for login****************
 function emptyInputLogin($uname, $pword) {
     $result;
     if (empty($uname) || empty($pword)) {
@@ -126,6 +126,94 @@ function loginUser($conn, $uname, $pword) {
     }
 }
 
+// ***************functions for tour operator****************
+//check if employee exists in database
+function employeeExists($conn, $uname, $email) {
+    $sql = "SELECT * FROM employees WHERE empid=?";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location:../empLogin.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $uname);
+    mysqli_stmt_execute($stmt);
+
+    $resultData = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($resultData)) {
+        return $row;
+    }
+    else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+//employee login
+function loginEmployee($conn, $uname, $pword) {
+    $user = employeeExists($conn, $uname, $uname);
+
+    if ($user === false) {
+        header("Location:../empLogin.php?error=invaliduser");                  //user does not exist
+        exit();
+    }
+
+    $pwdHashed = $user["pword"];
+    $checkPwd = password_verify($pword, $pwdHashed);
+
+    if ($checkPwd === false) {
+        header("Location:../empLogin.php?error=loginfailed");                  //password match failed
+        exit();
+    }
+    else if ($checkPwd === true) {
+        session_start();
+        $_SESSION["username"] = $user["empid"];
+        $_SESSION["usertype"] = $user["utype"];
+        $_SESSION["email"] = $user["email"];
+        $url = "../empHome.php";                                              // default page for 
+
+        header("Location: $url");
+        exit();
+    }
+}
+
+//create employee
+function createEmployee($conn, $fname, $lname, $empid, $email, $pass1, $phone, $utype) {
+    $sql = "INSERT INTO employees (fname, lname, empid, pword, email, phone, utype) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location:../empHome.php?error=sqlerror");
+        exit();
+    }
+
+    $hashedpwd = password_hash($pass1, PASSWORD_DEFAULT);
+
+    mysqli_stmt_bind_param($stmt, "sssssss", $fname, $lname, $empid, $hashedpwd, $email, $phone, $utype);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+    header("Location:../empHome.php?error=none");
+    exit();
+}
+
+//delete employee
+function deleteEmployee($conn, $empid, $url) {
+
+    $sql = "DELETE FROM employees WHERE empid=?";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement 
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location:../empHome.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $empid);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    header("Location: $url");
+    exit();
+}
 // ***************functions for search***************
 function emptyInputSearch($orig, $dest, $dept) {
     $result;
@@ -221,13 +309,41 @@ function dayOfWeek($dow) {
     }
 }
 
-function updateFlightSeats($conn, $flt, $dept, $pax) {
+function checkFlightSeats($conn, $flt, $dept, $pax) {
 
-    //check flightseats if input flight and date exist in dB
+    //check if there exists an entry for queried flt no and date
     $sql = "SELECT * FROM flightseats WHERE fltcode=? AND depdate=?";
     $stmt = mysqli_stmt_init($conn);                            //prepared statement
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("Location:../index.php?error=sqlerror1");
+        header("Location:../index.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "ss", $flt, $dept);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+    $resultCheck = mysqli_num_rows($resultData);
+
+    if ($resultCheck > 0) {                                         //if exists, check available seats
+        $result = mysqli_fetch_assoc($resultData);
+        if ($pax > $result["avlseats"]) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return 1;
+    }
+
+}
+
+function updateFlightSeats($conn, $flt, $dept, $pax) {
+
+    //check table flightseats if input flight and date exist in dB
+    $sql = "SELECT * FROM flightseats WHERE fltcode=? AND depdate=?";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location:../index.php?error=sqlerror");
         exit();
     }
 
@@ -239,17 +355,16 @@ function updateFlightSeats($conn, $flt, $dept, $pax) {
     if ($resultCheck > 0) {                                         //if exists, update row 
         $result = mysqli_fetch_assoc($resultData);
         
-        $sold = $result['soldseats'] + $pax;
-        $avl = $result['totseats'] - $sold;
+        $avl = $result['avlseats'] - $pax;
 
-        $sql = "UPDATE flightseats SET soldseats=?, avlseats=? WHERE fltcode=? AND depdate=?";
+        $sql = "UPDATE flightseats SET avlseats=? WHERE fltcode=? AND depdate=?";
         $stmt = mysqli_stmt_init($conn);                            //prepared statement
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             header("Location:../index.php?error=sqlerror");
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt, "ssss", $sold, $avl, $flt, $dept);
+        mysqli_stmt_bind_param($stmt, "sss", $avl, $flt, $dept);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     } 
@@ -258,7 +373,7 @@ function updateFlightSeats($conn, $flt, $dept, $pax) {
         $sql = "SELECT * FROM flights WHERE fltcode=?";
         $stmt = mysqli_stmt_init($conn);                            //prepared statement
         if (!mysqli_stmt_prepare($stmt, $sql)) {
-            header("Location:../index.php?error=sqlerror2");
+            header("Location:../index.php?error=sqlerror");
             exit();
         }
 
@@ -267,18 +382,17 @@ function updateFlightSeats($conn, $flt, $dept, $pax) {
         $resultData = mysqli_stmt_get_result($stmt);
         $result = mysqli_fetch_assoc($resultData);
 
-        $tot = $result['seats'];                                    //finding total no. of seats from flights table
-        $sold = $pax;
-        $avl = $tot - $sold;
+        $tot = $result['seats'];   
+        $avl = $tot - $pax;
 
-        $sql = "INSERT INTO flightseats (fltcode, depdate, soldseats, totseats, avlseats) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO flightseats (fltcode, depdate, totseats, avlseats) VALUES (?, ?, ?, ?)";
         $stmt = mysqli_stmt_init($conn);                            //prepared statement
         if (!mysqli_stmt_prepare($stmt, $sql)) {
-            header("Location:../index.php?error=sqlerror3");
+            header("Location:../index.php?error=sqlerror");
             exit();
         }
         
-        mysqli_stmt_bind_param($stmt, "sssss", $flt, $dept, $sold, $tot, $avl);
+        mysqli_stmt_bind_param($stmt, "ssss", $flt, $dept, $tot, $avl);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
@@ -287,76 +401,107 @@ function updateFlightSeats($conn, $flt, $dept, $pax) {
 }
 
 
-function createFlightBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $dept, $retn, $uname, $bookid, $totv) {
+function createFlightBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $dept, $retn, $pax, $uname, $bookid, $totv) {
     
-    for ($i=0; $i < count($fname); $i++) { 
+    if (!empty($flt2)) {
+
+        $t1 = checkFlightSeats($conn, $flt1, $dept, $pax);
+        $t2 = checkFlightSeats($conn, $flt2, $retn, $pax);
+
+        if ($t1 && $t2) {
+                
+            for ($i=0; $i < $pax; $i++) { 
+                    
+                $sql = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt = mysqli_stmt_init($conn);                            //prepared statement
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location:../index.php?error=sqlerror");
+                    exit();
+                }
+
+                mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt1, $dept);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+
+                $sql = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt = mysqli_stmt_init($conn);                            //prepared statement
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location:../index.php?error=sqlerror");
+                    exit();
+                }
+
+                mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt2, $retn);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
             
-        $sql = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql)) {
-            header("Location:../index.php?error=sqlerror");
-            exit();
-        }
+            }
 
-        mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt1, $dept);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
+            updateFlightSeats($conn, $flt1, $dept, $pax);
+            updateFlightSeats($conn, $flt2, $retn, $pax);
 
-        if (!empty($flt2)) {
-            $sql = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO bookings (bookingID, uname, start, endd, pax, totv) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_stmt_init($conn);                            //prepared statement
             if (!mysqli_stmt_prepare($stmt, $sql)) {
                 header("Location:../index.php?error=sqlerror");
                 exit();
             }
 
-            mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt2, $retn);
+            mysqli_stmt_bind_param($stmt, "ssssss", $bookid, $uname, $dept, $retn, $pax, $totv);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
-        }
-    }
 
-    if (!empty($flt2)) {
-
-        updateFlightSeats($conn, $flt1, $dept, count($fname));
-        updateFlightSeats($conn, $flt2, $retn, count($fname));
-
-        $sql = "INSERT INTO bookings (bookingID, uname, start, endd, totv) VALUES (?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql)) {
-            header("Location:../index.php?error=sqlerror");
+        } else {
+            header("Location:../index.php?booking=fail1");
             exit();
         }
-
-        mysqli_stmt_bind_param($stmt, "sssss", $bookid, $uname, $dept, $retn, $totv);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
 
     } else {
 
-        updateFlightSeats($conn, $flt1, $dept, count($fname));
+        $t1 = checkFlightSeats($conn, $flt1, $dept, $pax);
 
-        $sql = "INSERT INTO bookings (bookingID, uname, start, endd, totv) VALUES (?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql)) {
-            header("Location:../index.php?error=sqlerror");
+        if ($t1) {
+                
+            for ($i=0; $i < $pax; $i++) { 
+                
+                $sql = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt = mysqli_stmt_init($conn);                            //prepared statement
+                if (!mysqli_stmt_prepare($stmt, $sql)) {
+                    header("Location:../index.php?error=sqlerror");
+                    exit();
+                }
+
+                mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt1, $dept);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+
+            updateFlightSeats($conn, $flt1, $dept, $pax);
+
+            $sql = "INSERT INTO bookings (bookingID, uname, start, endd, pax, totv) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "ssssss", $bookid, $uname, $dept, $dept, $pax, $totv);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+        } else {
+            header("Location:../index.php?booking=fail1");
             exit();
-        }
-
-        mysqli_stmt_bind_param($stmt, "sssss", $bookid, $uname, $dept, $dept, $totv);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-        
+        }        
     }
 
-    header("Location:../index.php?booking=success");
+    header("Location:../paymentGateway.php?&bookid=".$bookid."&totv=".$totv);
     exit();
 }
 
 // ***************functions for searchHotels***************
 
-function dateDifference($start_date, $end_date)
-{
+//calculates trip duration
+function dateDifference($start_date, $end_date) {
     // calulating the difference in timestamps 
     $diff = strtotime($start_date) - strtotime($end_date);
      
@@ -365,13 +510,68 @@ function dateDifference($start_date, $end_date)
     return ceil(abs($diff / 86400));
 }
 
+//checks if there are sufficient rooms for entire trip duration
+function checkHotelRooms($conn, $hotel, $chkin, $chkout, $room, $pax){
+
+    $nrooms = ($pax%2 == 0) ? $pax/2 : ($pax+1)/2;
+    $nights = dateDifference($chkin, $chkout);
+
+    if ($room == "Single") {
+        $roomx = "room1";
+    }
+    if ($room == "Double") {
+        $roomx = "room2";
+    }
+    if ($room == "Suite") {
+        $roomx = "room3";
+    }
+
+    $date = date_create($chkin);
+    $avl = 1;
+
+    for ($i=0; $i < $nights; $i++) {
+
+        date_modify($date, '+1 day');
+        $chkin = date_format($date, 'Y-m-d');
+        
+        //check if there exists an entry for queried hotel and dates
+        $sql = "SELECT * FROM hotelrooms WHERE hotel=? AND checkin=?";
+        $stmt = mysqli_stmt_init($conn);                            //prepared statement
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            header("Location:../index.php?error=sqlerror");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "ss", $hotel, $chkin);
+        mysqli_stmt_execute($stmt);
+        $resultData = mysqli_stmt_get_result($stmt);
+        $resultCheck = mysqli_num_rows($resultData);
+
+        if ($resultCheck > 0) {                                         //if exists, check available seats
+            $result = mysqli_fetch_assoc($resultData);
+            if ($nrooms > $result[$roomx]) {
+                $avl *= 0;
+            } else {
+                $avl *= 1;
+            }
+        } else {
+            $avl *= 1;
+        }
+
+    }
+
+    return $avl;
+
+}
+
+//updates available rooms after a booking is made
 function updateHotelRooms($conn, $hotel, $chkin, $chkout, $room, $pax) {
 
     //preparing to update hotel rooms
     $sql = "SELECT * from hotels WHERE name=?";
     $stmt = mysqli_stmt_init($conn);                                //prepared statement
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("Location:../index.php?error=sqlerror1");
+        header("Location:../index.php?error=sqlerror");
         exit();
     }
 
@@ -392,7 +592,7 @@ function updateHotelRooms($conn, $hotel, $chkin, $chkout, $room, $pax) {
     $sql = "SELECT * FROM hotelrooms WHERE hotel=? AND checkin>=? AND checkin<? ORDER BY checkin";
     $stmt = mysqli_stmt_init($conn);                                //prepared statement
     if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("Location:../index.php?error=sqlerror1");
+        header("Location:../index.php?error=sqlerror");
         exit();
     }
 
@@ -413,7 +613,7 @@ function updateHotelRooms($conn, $hotel, $chkin, $chkout, $room, $pax) {
             $sql = "SELECT * FROM hotelrooms WHERE hotel=? AND checkin=?";
             $stmt = mysqli_stmt_init($conn);                                //prepared statement
             if (!mysqli_stmt_prepare($stmt, $sql)) {
-                header("Location:../index.php?error=sqlerror1");
+                header("Location:../index.php?error=sqlerror");
                 exit();
             }
 
@@ -486,101 +686,139 @@ function updateHotelRooms($conn, $hotel, $chkin, $chkout, $room, $pax) {
     return;
 }
 
-function createHotelBooking($conn, $fname, $lname, $gender, $dob, $hname, $checkin, $checkout, $room, $uname, $bookid, $totv) {
+//creates hotel bookings
+function createHotelBooking($conn, $fname, $lname, $gender, $dob, $hname, $checkin, $checkout, $room, $pax, $uname, $bookid, $totv) {
 
-    for ($i=0; $i < count($fname); $i++) { 
+    $t1 = checkHotelRooms($conn, $hname, $checkin, $checkout, $room, $pax);
+
+    if ($t1) {
+        
+        for ($i=0; $i < $pax; $i++) { 
+                
+            $sql = "INSERT INTO hotelbookings (bookingID, fname, lname, gender, dob, hname, room, checkin, checkout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
             
-        $sql = "INSERT INTO hotelbookings (bookingID, fname, lname, gender, dob, hname, room, checkin, checkout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            mysqli_stmt_bind_param($stmt, "sssssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $hname, $room, $checkin, $checkout);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+        }
+
+        updateHotelRooms($conn, $hname, $checkin, $checkout, $room, $pax);
+
+        $sql = "INSERT INTO bookings (bookingID, uname, start, endd, pax, totv) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_stmt_init($conn);                            //prepared statement
         if (!mysqli_stmt_prepare($stmt, $sql)) {
             header("Location:../index.php?error=sqlerror");
             exit();
         }
-        
-        mysqli_stmt_bind_param($stmt, "sssssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $hname, $room, $checkin, $checkout);
+
+        mysqli_stmt_bind_param($stmt, "ssssss", $bookid, $uname, $checkin, $checkout, $pax, $totv);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-    }
-
-    updateHotelRooms($conn, $hname, $checkin, $checkout, $room, count($fname));
-
-    $sql = "INSERT INTO bookings (bookingID, uname, start, endd, totv) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_stmt_init($conn);                            //prepared statement
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("Location:../index.php?error=sqlerror");
+        header("Location:../paymentGateway.php?&bookid=".$bookid."&totv=".$totv);
         exit();
+
     }
 
-    mysqli_stmt_bind_param($stmt, "sssss", $bookid, $uname, $checkin, $checkout, $totv);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    header("Location:../index.php?booking=success");
+    header("Location:../index.php?booking=fail2");
     exit();
 }
+
 
 // ***************functions for tourBooking***************
-function createTourBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $hname, $sdate, $edate, $room, $pax, $uname, $bookid, $totv) {
 
-    for ($i=0; $i < count($fname); $i++) { 
-            
-            // book flt1
-        $sql1 = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql1)) {
-            header("Location:../index.php?error=sqlerror");
-            exit();
-        }
+function checkTourAvailability($conn, $flt1, $flt2, $hname, $sdate, $edate, $room, $pax) {
 
-        mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt1, $sdate);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
+    $t1 = checkFlightSeats($conn, $flt1, $sdate, $pax);
+    $t2 = checkFlightSeats($conn, $flt2, $edate, $pax);
+    $t3 = checkHotelRooms($conn, $hname, $sdate, $edate, $room, $pax);
 
-            // book flt2
-        $sql2 = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql2)) {
-            header("Location:../index.php?error=sqlerror");
-            exit();
-        }
-
-        mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt2, $edate);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-
-            // book hotel
-        $sql3 = "INSERT INTO hotelbookings (bookingID, fname, lname, gender, dob, hname, room, checkin, checkout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);                            //prepared statement
-        if (!mysqli_stmt_prepare($stmt, $sql3)) {
-            header("Location:../index.php?error=sqlerror");
-            exit();
-        }
-        
-        mysqli_stmt_bind_param($stmt, "sssssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $hname, $room, $sdate, $edate);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-    }
-
-        // insert into bookings
-    $sql = "INSERT INTO bookings (bookingID, uname, start, endd, totv) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_stmt_init($conn);                            //prepared statement
-    if (!mysqli_stmt_prepare($stmt, $sql)) {
-        header("Location:../index.php?error=sqlerror");
-        exit();
-    }
-
-    mysqli_stmt_bind_param($stmt, "sssss", $bookid, $uname, $sdate, $edate, $totv);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-
-    header("Location:../index.php?booking=success");
-    exit();
+    return $t1*$t2*$t3;
 }
 
-//functions for modify booking
-function deleteReservation($conn, $bookid) {
-    $sql = "SELECT * FROM flightbookings WHERE bookingID=?";
+function createTourBooking($conn, $fname, $lname, $gender, $dob, $flt1, $flt2, $hname, $sdate, $edate, $room, $pax, $uname, $bookid, $totv) {
+
+    $t1 = checkTourAvailability($conn, $flt1, $flt2, $hname, $sdate, $edate, $room, $pax);         //check availability for flights and hotels
+
+    if ($t1) {
+
+        for ($i=0; $i < $pax; $i++) { 
+                
+                // book flt1
+            $sql1 = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql1)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt1, $sdate);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+                // book flt2
+            $sql2 = "INSERT INTO flightbookings (bookingID, fname, lname, gender, dob, fltcd, doj) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql2)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "sssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $flt2, $edate);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+                // book hotel
+            $sql3 = "INSERT INTO hotelbookings (bookingID, fname, lname, gender, dob, hname, room, checkin, checkout) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql3)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+            
+            mysqli_stmt_bind_param($stmt, "sssssssss", $bookid, $fname[$i], $lname[$i], $gender[$i], $dob[$i], $hname, $room, $sdate, $edate);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        }
+
+        updateFlightSeats($conn, $flt1, $sdate, $pax);
+        updateFlightSeats($conn, $flt2, $edate, $pax);
+        updateHotelRooms($conn, $hname, $sdate, $edate, $room, $pax);
+
+            // insert into bookings
+        $sql = "INSERT INTO bookings (bookingID, uname, start, endd, pax, totv) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = mysqli_stmt_init($conn);                            //prepared statement
+        if (!mysqli_stmt_prepare($stmt, $sql)) {
+            header("Location:../index.php?error=sqlerror");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "ssssss", $bookid, $uname, $sdate, $edate, $pax, $totv);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        header("Location:../paymentGateway.php?&bookid=".$bookid."&totv=".$totv);
+        exit();
+
+    }
+
+    header("Location:../index.php?booking=fail3");
+    exit();
+
+}
+
+// ************functions for Cancel Booking***************
+
+//reset flight seats when a booking is deleted
+function resetFlightSeats($conn, $bookid) {                     
+
+    $sql = "SELECT * FROM bookings WHERE bookingID=?";          //fetch pax from bookings table
     $stmt = mysqli_stmt_init($conn);                            //prepared statement 
     if (!mysqli_stmt_prepare($stmt, $sql)) {
         header("Location:../index.php?error=sqlerror");
@@ -590,13 +828,151 @@ function deleteReservation($conn, $bookid) {
     mysqli_stmt_bind_param($stmt, "s", $bookid);
     mysqli_stmt_execute($stmt);
     $resultData = mysqli_stmt_get_result($stmt);
-    $resultCheck = mysqli_num_rows($resultData);
     $result = mysqli_fetch_assoc($resultData);
 
-    $seats = $resultCheck;
+    $pax = $result['pax'];
+
+    $sql1 = "SELECT DISTINCT fltcd, doj FROM flightbookings WHERE bookingID=?";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement 
+    if (!mysqli_stmt_prepare($stmt, $sql1)) {
+        header("Location:../index.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $bookid);
+    mysqli_stmt_execute($stmt);
+    $result1Data = mysqli_stmt_get_result($stmt);
+
+    if ($result1Check = mysqli_num_rows($result1Data)) {
+
+        while ($result1 = mysqli_fetch_assoc($result1Data)) {           //update for all fltcodes and dojs
+            
+            $sql2 = "SELECT * FROM flightseats WHERE fltcode=? AND depdate=?";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql2)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "ss", $result1['fltcd'], $result1['doj']);
+            mysqli_stmt_execute($stmt);
+            $result2Data = mysqli_stmt_get_result($stmt);
+            $result2 = mysqli_fetch_assoc($result2Data);
+            
+            $avl = $result2['avlseats'] + $pax;
+
+            $sql3 = "UPDATE flightseats SET avlseats=? WHERE fltcode=? AND depdate=?";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql3)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "sss", $avl, $result1['fltcd'], $result1['doj']);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+        }
+    }
+
+    return;
 }
 
+//reset hotel rooms when a booking is deleted
+function resetHotelRooms($conn, $bookid) {                     
+
+    $sql = "SELECT * FROM bookings WHERE bookingID=?";          //fetch pax from bookings table
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement 
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("Location:../index.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $bookid);
+    mysqli_stmt_execute($stmt);
+    $resultData = mysqli_stmt_get_result($stmt);
+    $result = mysqli_fetch_assoc($resultData);
+
+    $pax = $result['pax'];
+    $nrooms = ($pax%2 == 0) ? $pax/2 : ($pax+1)/2;
+
+    $sql1 = "SELECT DISTINCT hname, room, checkin, checkout FROM hotelbookings WHERE bookingID=?";
+    $stmt = mysqli_stmt_init($conn);                            //prepared statement 
+    if (!mysqli_stmt_prepare($stmt, $sql1)) {
+        header("Location:../index.php?error=sqlerror");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $bookid);
+    mysqli_stmt_execute($stmt);
+    $result1Data = mysqli_stmt_get_result($stmt);
+    if ($result1Check = mysqli_num_rows($result1Data)) {
+            
+        $result1 = mysqli_fetch_assoc($result1Data);
+
+        $hotel = $result1['hname'];
+        $room = $result1['room'];
+        $chkin = $result1['checkin'];
+        $chkout = $result1['checkout'];
+
+        $d1 = $chkin;
+        $nights = dateDifference($chkin, $chkout);
+
+        for ($i=0; $i < $nights; $i++) {                                //execute only one update or insert statement for each night
+        
+            $sql2 = "SELECT * FROM hotelrooms WHERE hotel=? AND checkin=?";
+            $stmt = mysqli_stmt_init($conn);                                //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql2)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "ss", $hotel, $d1);
+            mysqli_stmt_execute($stmt);
+            $result2Data = mysqli_stmt_get_result($stmt);
+            $result2Check = mysqli_num_rows($result2Data);
+            $result2 = mysqli_fetch_assoc($result2Data);
+
+            $room1 = $result2["room1"];
+            $room2 = $result2["room2"];
+            $room3 = $result2["room3"];
+
+            if ($room == "Single") {
+                $room1 += $nrooms;
+            }
+            if ($room == "Double") {
+                $room2 += $nrooms;
+            }
+            if ($room == "Suite") {
+                $room3 += $nrooms;
+            }
+
+            $sql = "UPDATE hotelrooms SET room1=?, room2=?, room3=? WHERE hotel=? AND checkin=?";
+            $stmt = mysqli_stmt_init($conn);                            //prepared statement
+            if (!mysqli_stmt_prepare($stmt, $sql)) {
+                header("Location:../index.php?error=sqlerror");
+                exit();
+            }
+
+            mysqli_stmt_bind_param($stmt, "sssss", $room1, $room2, $room3, $hotel, $d1);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+
+
+            $dtemp = strtotime("+1 day", strtotime($d1));
+            $d1 = date("Y-m-d", $dtemp);
+        }
+    }
+
+    return;
+}
+
+//delete bookings
 function deleteBooking($conn, $bookid, $url) {
+
+    resetFlightSeats($conn, $bookid);
+    resetHotelRooms($conn, $bookid);
+
     $sql = "DELETE FROM bookings WHERE bookingID=?";
     $stmt = mysqli_stmt_init($conn);                            //prepared statement 
     if (!mysqli_stmt_prepare($stmt, $sql)) {
